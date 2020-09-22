@@ -1,5 +1,5 @@
 ---
-title: "Week 03 Assignment 02_datasets"
+title: "Week 03 Assignment 03_datasets_revisited"
 author: "Jailee Foster"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -18,20 +18,233 @@ course: STATS 419 Survey of Multivariate Analysis
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.align='center', fig.pos='H')
 ```
 
-```{r one, message=FALSE}
+```{r common-include, message=FALSE}
 library(devtools); # devtools is required for function source_url() to work
 my.source = 'github';
-github.path.instructor = "https://raw.githubusercontent.com/MonteShaffer/WSU_STATS419_FALL2020/";
 github.path = "https://raw.githubusercontent.com/jaileefoster/WSU_STATS419_FALL2020/";
-source_url(paste0(github.path.instructor, "master/functions/libraries.R"));
-source_url("https://raw.githubusercontent.com/MonteShaffer/WSU_STATS419_FALL2020/master/functions/functions-imdb.R"); 
+source_url(paste0(github.path, "master/functions/libraries.R"));
 ```
 
-Malcolm Gladwell\footnote{asdf} talks about outliers \citep{Gladwell:2008}.
+# Matrix
 
-\citet{Gladwell:2008} talks about outliers.
+Create the "rotate matrix" functions as described in lectures. Apply to the example "myMatrix".
 
-We would like to thank \citet{Rmarkdown:Latex:Templates} for help with our Latex template. 
+```{r matrix-include, message=FALSE}
+source_url(paste0(github.path, "master/functions/functions-matrix.R"));
+
+myMatrix = matrix(c(1, 0, 2,
+                    0, 3, 0,
+                    4, 0, 5), nrow=3, byrow=T)
+```
+
+\noindent Note: in the file that contains the matrix functions (functions-matrix.R), there is a transformation matrix that is used in the functions. When a matrix is multiplied by this transformation matrix, its columns are reversed. 
+
+```{r matrix-demo}
+transposeMatrix(myMatrix);
+rotateMatrix90(myMatrix); # clockwise
+rotateMatrix180(myMatrix);
+rotateMatrix270(myMatrix);
+```
+
+\newpage 
+
+# IRIS
+
+Recreate the graphic for the IRIS Data Set using R.  Same titles, same scales, same colors.  See: https://en.wikipedia.org/wiki/Iris_flower_data_set#/media/File:Iris_dataset_scatterplot.svg
+
+```{r iris-demo, fig.cap="Scatterplot of IRIS Dataset: Wikipedia(2020)", fig.height=6, fig.width=6}
+data(iris)
+
+pairs(iris[, 1:4], main="Iris Data (red=setosa,green=versicolor,blue=virginica)",
+      bg=c("red", "springgreen3", "blue")[iris$Species], col="black", pch=21,
+      cex.labels = 1, cex.axis=1, cex.main=1)
+```
+
+\noindent Write 2-3 sentences concisely defining the IRIS Data Set. Be certain the final writeup are your own sentences (make certain you modify what you find, make it your own, but also cite where you got your ideas from).
+\vskip 0.2in
+\noindent The IRIS Data Set provides the following characteristics relating the iris flower: sepal length, sepal width, petal length, and petal width (all in centimeters). The data set also specifies which species each recording is. The data set itself is home to information about 50 samples each of 3 different species of iris flower, 150 samples in total. \citep{IRIS:2019}
+
+\newpage
+
+# Personality
+
+Import "personality-raw.txt" into R.  Remove the V00 column.
+
+```{r personality-include, message=FALSE}
+personality.raw = paste0(github.path, "master/datasets/personality/personality-raw.txt");
+personality.data = read.csv(personality.raw, header=T, sep="|");
+personality.data = subset(personality.data, select=-c(V00))
+```
+
+## Cleanup Raw Data Set
+
+Create two new columns from the current column "date_test":  year and week. Sort the new data frame by YEAR, WEEK so the newest tests are first ... The newest tests (e.g., 2020 or 2019) are at the top of the data frame.  Then remove duplicates using the unique function based on the column "md5_email".
+
+```{r personality-cleanup, message=FALSE}
+personality.data=personality.data[rev(order(as.Date(personality.data$date_test, format='%m/%d/%Y %H:%M'))),]
+
+date = strptime(personality.data$date_test, format='%m/%d/%Y %H:%M');
+year = as.numeric(strftime(date, format="%Y"));
+week = as.numeric(strftime(date, format="%W"));
+
+personality.data$year = year;
+personality.data$week = week;
+
+personality.data = subset(personality.data, select=-c(date_test))
+
+unique.by.email = unique(personality.data["md5_email"])
+personality.data.clean = personality.data[!duplicated(personality.data["md5_email"]),]
+```
+
+\noindent Save the data frame in the same "pipe-delimited format" ( | is a pipe ) with the headers. You will keep the new data frame as "personality-clean.txt" for future work (you will not upload it at this time). 
+
+```{r personality-export, message=FALSE}
+write.table(personality.data.clean, "personality-clean.txt", sep="|")
+```
+
+\noindent In the homework, for this tasks, report how many records your raw dataset had and how many records your clean dataset has.
+
+```{r personality-dimensions}
+dim(personality.data)
+dim(unique.by.email)
+dim(personality.data.clean)
+```
+
+\noindent The raw dataset had 838 records and the clean dataset had 678 records.
+
+# Variance and Z-Scores
+
+Write functions for doSummary and sampleVariance and doMode.
+
+```{r variance-include, message=FALSE}
+source_url(paste0(github.path, "master/functions/functions-variance.R"));
+personality.vec = as.vector(personality.data.clean[1,])
+personality.vec = as.numeric(subset(personality.vec, select=-c(md5_email, year, week)))
+```
+
+## Variance
+
+Test these functions in your homework on the "monte.shaffer@gmail.com" record from the clean dataset.  Report your findings.
+
+```{r variance-demo}
+doSummary(personality.vec)
+doMode(personality.vec)
+doSampleVariance(personality.vec, "naive")
+doSampleVariance(personality.vec, "na")
+zScores(personality.vec)
+```
+
+The built in function to find standard deviation, sd(), uses the naive variance method. 
+
+## Z-Scores
+
+For this "monte.shaffer@gmail.com" record, also create z-scores.  Plot(x,y) where x is the raw scores for "monte.shaffer@gmail.com" and y is the z-scores from those raw scores.  Include the plot in your assignment, and write 2 sentences describing what pattern you are seeing and why this pattern is present.
+
+```{r zscores-demo}
+z.scores = zScores(personality.vec)
+plot(personality.vec, z.scores)
+```
+
+# Will vs. Denzel
+
+```{r imdb-include, message=FALSE}
+source_url(paste0(github.path, "master/functions/functions-imdb.R"));
+```
+
+## Will Smith
+
+```{r will, fig.cap = c("Will Smith scatterplot: IMDB(2020)", "Will Smith boxplot raw millions: IMDB(2020)")}
+nmid = "nm0000226";
+  will = grabFilmsForPerson(nmid);
+  plot(will$movies.50[,c(1,6,7:10)]);
+  boxplot(will$movies.50$millions);
+    widx =  which.max(will$movies.50$millions);
+  will$movies.50[widx,];
+    summary(will$movies.50$year);  # bad boys for life ... did data change?
+```
+
+## Denzel Washington
+
+```{r denzel, fig.cap = c("Denzel Washington scatterplot: IMDB(2020)", "Denzel Washington boxplot raw millions: IMDB(2020)")}
+nmid = "nm0000243";
+ 	denzel = grabFilmsForPerson(nmid);
+ 	plot(denzel$movies.50[,c(1,6,7:10)]);
+  	boxplot(denzel$movies.50$millions);
+		didx =  which.max(denzel$movies.50$millions);
+	denzel$movies.50[didx,];
+		summary(denzel$movies.50$year);
+```
+
+## Side-by-Side Comparisons
+
+### Top 50 Movies Using Raw Dollars
+
+```{r boxplotraw}
+par(mfrow=c(1,2));
+	boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
+	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
+	
+	par(mfrow=c(1,1));
+	
+```
+
+### Top 50 Movies Using Adjusted Dollars (2000)
+
+``` {r will2000}
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/functions-inflation.R"), local=T);
+
+result= inflation()
+
+will.df = as.data.frame(will)
+
+will.millions.2000 = c()
+
+for (i in 1:50)
+{
+  line = as.numeric(will.df$movies.50.year) - 1919
+  will.millions.2000[i] = will.df$movies.50.millions[i] * (result$dollars.2000[line[i]])/1000000
+}
+
+will.df$millions.2000 = will.millions.2000
+
+```
+
+``` {r denzel2000}
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/functions-inflation.R"), local=T);
+
+result= inflation()
+
+denzel.df = as.data.frame(denzel)
+
+denzel.millions.2000 = c()
+
+for (i in 1:50)
+{
+  line = as.numeric(denzel.df$movies.50.year) - 1919
+  denzel.millions.2000[i] = denzel.df$movies.50.millions[i] * (result$dollars.2000[line[i]])/1000000
+}
+
+denzel.df$millions.2000 = denzel.millions.2000
+
+```
+
+```{r boxplotadjusted}
+par(mfrow=c(1,2));
+	boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
+	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
+	
+	par(mfrow=c(1,1));
+	
+```
+
+### Total Votes (Divide by 1,000,000 to scale)
+### Average Ratings
+
+### Year? Minutes? 
+### Metacritic (NA values)
+

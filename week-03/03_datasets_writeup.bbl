@@ -1,0 +1,9 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Dua and Graff}{Dua and
+  Graff}{2017}]{IRIS:2019}
+Dua, D. and C.~Graff (2017).
+\newblock {UCI} machine learning repository: Iris data set.
+\newblock \\ {\tiny \url{https://archive.ics.uci.edu/ml/datasets/iris}}.
+
+\end{thebibliography}

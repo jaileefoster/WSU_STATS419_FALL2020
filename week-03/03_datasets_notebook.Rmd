@@ -1,5 +1,5 @@
 ---
-title: 'R Notebook sandbox: Assignment "Datasets" (10 points)'
+title: 'R Notebook sandbox: Assignment "03_datasets_revisited" (10 points)'
 output:
   html_document:
     df_print: paged
@@ -139,6 +139,7 @@ plot(personality.vec, z.scores)
 #### Problems with this approach
 ### Traditional 2 Pass
 ## Z-Scores
+
 # Will vs Denzel
 ```{r imdb-include, message=FALSE}
 source(paste0(local.path, "functions/functions-imdb.R"), local=T);
