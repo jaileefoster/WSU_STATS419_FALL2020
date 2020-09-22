@@ -1,16 +1,23 @@
 ---
-title: "R Notebook"
+title: 'R Notebook sandbox: Assignment "Datasets" (10 points)'
 output:
   html_document:
     df_print: paged
+
+fig_captions: true
+number_section: true
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
-```{r}
-plot(cars)
+```{r one, message=FALSE}
+library(devtools); 
+my.source = 'local';
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/libraries.R"), local=T);
+source(paste0(local.path, "functions/functions-imdb.R"), local=T);
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.

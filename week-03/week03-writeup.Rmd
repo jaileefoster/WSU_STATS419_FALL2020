@@ -1,0 +1,54 @@
+---
+title: "Week 03 Assignment 02_datasets"
+author: "Jailee Foster"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    citation_package: natbib
+    latex_engine: pdflatex
+    template: /Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/latex-templates/homework.tex
+  html_document:
+    df_print: paged
+email: jailee.foster@wsu.edu
+instructor: Monte J. Shaffer
+course-short: STATS419
+course: STATS 419 Survey of Multivariate Analysis
+
+fig_captions: true
+number_section: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r one, message=FALSE}
+library(devtools); # devtools is required for function source_url() to work
+my.source = 'github';
+github.path.instructor = "https://raw.githubusercontent.com/MonteShaffer/WSU_STATS419_FALL2020/";
+github.path = "https://raw.githubusercontent.com/jaileefoster/WSU_STATS419_FALL2020/";
+source_url(paste0(github.path, "master/functions/libraries.R"));
+source_url("https://raw.githubusercontent.com/MonteShaffer/WSU_STATS419_FALL2020/master/functions/functions-imdb.R"); 
+```
+
+\newpage
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE, fig.cap = "test cap"}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

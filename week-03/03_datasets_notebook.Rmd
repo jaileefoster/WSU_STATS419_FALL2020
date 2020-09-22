@@ -1,0 +1,185 @@
+---
+title: 'R Notebook sandbox: Assignment "Datasets" (10 points)'
+output:
+  html_document:
+    df_print: paged
+    fig_captions: yes
+    number_section: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+```{r common-include, message=FALSE}
+library(devtools); 
+my.source = 'local';
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/libraries.R"), local=T);
+```
+
+# Matrix
+
+Create the "rotate matrix" functions as described in lectures. Apply to the example "myMatrix".
+
+```{r matrix-include, message=FALSE}
+source(paste0(local.path, "functions/functions-matrix.R"), local=T);
+
+myMatrix = matrix(c(1, 0, 2,
+                    0, 3, 0,
+                    4, 0, 5), nrow=3, byrow=T)
+```
+2:48
+```{r matrix-demo}
+transposeMatrix(myMatrix);
+rotateMatrix90(myMatrix); # clockwise
+rotateMatrix180(myMatrix);
+rotateMatrix270(myMatrix);
+```
+
+# IRIS
+
+Recreate the graphic for the IRIS Data Set using R.  Same titles, same scales, same colors.  See: https://en.wikipedia.org/wiki/Iris_flower_data_set#/media/File:Iris_dataset_scatterplot.svg
+
+```{r iris-demo}
+data(iris)
+
+pairs(iris[, 1:4], main="Iris Data (red=setosa,green=versicolor,blue=virginica)",
+      bg=c("red", "springgreen3", "blue")[iris$Species], col="black", pch=21, 
+      cex.labels = 1, cex.axis=1, cex.main=1)
+```
+
+Write 2-3 sentences concisely defining the IRIS Data Set.  Maybe search KAGGLE for a nice template.  Be certain the final writeup are your own sentences (make certain you modify what you find, make it your own, but also cite where you got your ideas from).  NOTE:  Watch the video, Figure 8 has a +5 EASTER EGG.
+                              
+The IRIS Data Set provides the following characteristics relating the iris flower: sepal length, sepal width, petal length, and petal width (all in centimeters). The data set also specifies which species each recording is. The data set itself is home to information about 50 samples each of 3 different species of iris flower, 150 samples in total. CITE
+
+# Personality
+
+Import "personality-raw.txt" into R.  Remove the V00 column.
+
+```{r personality-include, message=FALSE}
+personality.data = read.csv(paste0(local.path, "datasets/personality/personality-raw.txt"), header=T, sep="|")
+personality.data = subset(personality.data, select=-c(V00))
+```
+
+## Cleanup Raw Data Set
+
+Create two new columns from the current column "date_test":  year and week. Sort the new data frame by YEAR, WEEK so the newest tests are first ... The newest tests (e.g., 2020 or 2019) are at the top of the data frame.  Then remove duplicates using the unique function based on the column "md5_email".
+
+```{r personality-cleanup, message=FALSE}
+personality.data=personality.data[rev(order(as.Date(personality.data$date_test, format='%m/%d/%Y %H:%M'))),]
+
+date = strptime(personality.data$date_test, format='%m/%d/%Y %H:%M');
+year = as.numeric(strftime(date, format="%Y"));
+week = as.numeric(strftime(date, format="%W"));
+
+personality.data$year = year;
+personality.data$week = week;
+
+personality.data = subset(personality.data, select=-c(date_test))
+
+unique.by.email = unique(personality.data["md5_email"])
+personality.data.clean = personality.data[!duplicated(personality.data["md5_email"]),]
+```
+
+Save the data frame in the same "pipe-delimited format" ( | is a pipe ) with the headers. You will keep the new data frame as "personality-clean.txt" for future work (you will not upload it at this time). 
+
+```{r personality-export, message=FALSE}
+write.table(personality.data.clean, "personality-clean.txt", sep="|")
+```
+
+In the homework, for this tasks, report how many records your raw dataset had and how many records your clean dataset has.
+
+```{r personality-dimensions}
+dim(personality.data)
+dim(unique.by.email)
+dim(personality.data.clean)
+```
+
+The raw dataset had 838 records and the clean dataset had 678 records.
+
+
+
+# Variance and Z-Scores
+
+Write functions for doSummary and sampleVariance and doMode.
+
+```{r variance-include, message=FALSE}
+source(paste0(local.path, "functions/functions-variance.R"), local=T);
+personality.vec = as.vector(personality.data.clean[1,])
+personality.vec = as.numeric(subset(personality.vec, select=-c(md5_email, year, week)))
+```
+
+## Variance
+
+Test these functions in your homework on the "monte.shaffer@gmail.com" record from the clean dataset.  Report your findings.
+
+```{r variance-demo}
+doSummary(personality.vec)
+doMode(personality.vec)
+doSampleVariance(personality.vec, "naive")
+doSampleVariance(personality.vec, "na")
+zScores(personality.vec)
+```
+
+The built in function to find standard deviation, sd(), uses the naive variance method. 
+
+## Z-Scores
+
+For this "monte.shaffer@gmail.com" record, also create z-scores.  Plot(x,y) where x is the raw scores for "monte.shaffer@gmail.com" and y is the z-scores from those raw scores.  Include the plot in your assignment, and write 2 sentences describing what pattern you are seeing and why this pattern is present.
+
+```{r zscores-demo}
+z.scores = zScores(personality.vec)
+plot(personality.vec, z.scores)
+```
+
+### Naive
+#### Problems with this approach
+### Traditional 2 Pass
+## Z-Scores
+# Will vs Denzel
+```{r imdb-include, message=FALSE}
+source(paste0(local.path, "functions/functions-imdb.R"), local=T);
+```
+
+## Will Smith
+```{r will, fig.cap = c("Will Smith scatterplot: IMDB(2020)", "Will Smith boxplot raw millions: IMDB(2020)")}
+nmid = "nm0000226";
+  will = grabFilmsForPerson(nmid);
+  plot(will$movies.50[,c(1,6,7:10)]);
+  boxplot(will$movies.50$millions);
+    widx =  which.max(will$movies.50$millions);
+  will$movies.50[widx,];
+    summary(will$movies.50$year);  # bad boys for life ... did data change?
+```
+
+## Denzel Washington
+```{r denzel, fig.cap = c("Denzel Washington scatterplot: IMDB(2020)", "Denzel Washington boxplot raw millions: IMDB(2020)")}
+nmid = "nm0000243";
+ 	denzel = grabFilmsForPerson(nmid);
+ 	plot(denzel$movies.50[,c(1,6,7:10)]);
+  	boxplot(denzel$movies.50$millions);
+		didx =  which.max(denzel$movies.50$millions);
+	denzel$movies.50[didx,];
+		summary(denzel$movies.50$year);
+```
+
+## Boxplot of Top-50 movies using Raw Dollars
+```{r boxplotraw}
+par(mfrow=c(1,2));
+	boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
+	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
+	
+	par(mfrow=c(1,1));
+	
+```
+
+## Side-by-Side Comparisons
+
+### Adjusted Dollars (2000)
+### Total Votes (Divide by 1,000,000 to scale)
+### Average Ratings
+### Year? Minutes? 
+### Metacritic (NA values)
