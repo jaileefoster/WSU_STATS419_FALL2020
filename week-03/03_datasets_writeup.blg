@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: 03_datasets_writeup.aux
 The style file: ./../biblio/chicago.bst
 Database file #1: ./../biblio/master.bib
-You've used 1 entry,
+You've used 6 entries,
             2861 wiz_defined-function locations,
-            619 strings with 5141 characters,
-and the built_in function-call counts, 651 in all, are:
-= -- 57
-> -- 52
+            647 strings with 6042 characters,
+and the built_in function-call counts, 3218 in all, are:
+= -- 288
+> -- 208
 < -- 0
-+ -- 16
-- -- 20
-* -- 48
-:= -- 128
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 7
-chr.to.int$ -- 1
-cite$ -- 1
-duplicate$ -- 15
-empty$ -- 32
-format.name$ -- 24
-if$ -- 115
++ -- 56
+- -- 80
+* -- 208
+:= -- 639
+add.period$ -- 23
+call.type$ -- 6
+change.case$ -- 38
+chr.to.int$ -- 6
+cite$ -- 6
+duplicate$ -- 90
+empty$ -- 187
+format.name$ -- 88
+if$ -- 567
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 0
-newline$ -- 8
-num.names$ -- 10
-pop$ -- 5
+newline$ -- 38
+num.names$ -- 60
+pop$ -- 21
 preamble$ -- 1
-purify$ -- 13
+purify$ -- 74
 quote$ -- 0
-skip$ -- 23
+skip$ -- 113
 stack$ -- 0
-substring$ -- 20
-swap$ -- 5
+substring$ -- 120
+swap$ -- 30
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 20
+type$ -- 120
 warning$ -- 0
-while$ -- 10
+while$ -- 60
 width$ -- 0
-write$ -- 15
+write$ -- 90

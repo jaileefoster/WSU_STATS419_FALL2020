@@ -1,9 +1,45 @@
 \begin{thebibliography}{}
 
+\bibitem[\protect\citeauthoryear{de~Vries and Meys}{de~Vries and
+  Meys}{2019}]{plot:title}
+de~Vries, A. and J.~Meys (2019).
+\newblock How to add titles and axis labels to a plot in r.
+\newblock (Accessed: September 20, 2020).
+\newblock \\ {\tiny
+  \url{https://www.dummies.com/programming/r/how-to-add-titles-and-axis-labels-to-a-plot-in-r/}}.
+
 \bibitem[\protect\citeauthoryear{Dua and Graff}{Dua and
   Graff}{2017}]{IRIS:2019}
 Dua, D. and C.~Graff (2017).
 \newblock {UCI} machine learning repository: Iris data set.
 \newblock \\ {\tiny \url{https://archive.ics.uci.edu/ml/datasets/iris}}.
+
+\bibitem[\protect\citeauthoryear{I82Much}{I82Much}{2011}]{sort:date}
+I82Much (2011).
+\newblock How to sort a data frame by date.
+\newblock (Accessed: September 20, 2020).
+\newblock \\ {\tiny
+  \url{https://stackoverflow.com/questions/6246159/how-to-sort-a-data-frame-by-date}}.
+
+\bibitem[\protect\citeauthoryear{Kassambra}{Kassambra}{2018}]{remove:duplicates}
+Kassambra, A. (2018).
+\newblock Identify and remove duplicate data in r.
+\newblock (Accessed: September 20, 2020).
+\newblock \\ {\tiny
+  \url{https://www.datanovia.com/en/lessons/identify-and-remove-duplicate-data-in-r/}}.
+
+\bibitem[\protect\citeauthoryear{Kassambra}{Kassambra}{2019}]{PCH:R}
+Kassambra, A. (2019).
+\newblock Pch in r best tips.
+\newblock (Accessed: September 20, 2020).
+\newblock \\ {\tiny
+  \url{https://www.datanovia.com/en/blog/pch-in-r-best-tips/}}.
+
+\bibitem[\protect\citeauthoryear{Martins}{Martins}{2015}]{change:plot:font:size}
+Martins, V. (2015).
+\newblock R pairs function - how to change the diagonal values font size?
+\newblock (Accessed: September 20, 2020).
+\newblock \\ {\tiny
+  \url{https://stackoverflow.com/questions/30407332/r-pairs-function-how-to-change-the-diagonal-values-font-size}}.
 
 \end{thebibliography}

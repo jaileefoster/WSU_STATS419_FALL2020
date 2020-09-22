@@ -1,3 +1,4 @@
+# calculate summary statistics of the vector x and output as a dataframe
 doSummary = function(x) # x is a vector of data
 {
   length = length(x);
@@ -14,10 +15,11 @@ doSummary = function(x) # x is a vector of data
   data.frame(length=length, na.count=na.count, mean=mean, median=mean, mode=mode, var.naive=variance.naive$var, var.2pass=variance.2pass$var, sd.builtin=sd.builtin, sd.custom=sd.custom$var);
 }
 
-
+# calculate the variance of the vector x, pass in method as "naive" or other
 doSampleVariance = function(x, method)
 {
   x=x[!is.na(x)];
+  # naive method
   if(method=="naive")
   {
     n=0;
@@ -33,6 +35,7 @@ doSampleVariance = function(x, method)
     data.frame(sum=sum, sum.squared=sum.squared, var=naive.variance);
   }
   else
+    # two-pass method
   {
     sum1=0;
     sum2=0;
@@ -53,6 +56,7 @@ doSampleVariance = function(x, method)
 }
 
 
+# find the mode in the vector x
 doMode = function(x)
 {
   freq = table(x);
@@ -62,6 +66,7 @@ doMode = function(x)
 }
 
 
+# calculate the z-scores of the entries of the vector x
 zScores = function(x)
 {
   z.scores = c();

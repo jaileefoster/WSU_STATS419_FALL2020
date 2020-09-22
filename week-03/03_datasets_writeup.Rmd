@@ -44,7 +44,7 @@ myMatrix = matrix(c(1, 0, 2,
 
 ```{r matrix-demo}
 transposeMatrix(myMatrix);
-rotateMatrix90(myMatrix); # clockwise
+rotateMatrix90(myMatrix); 
 rotateMatrix180(myMatrix);
 rotateMatrix270(myMatrix);
 ```
@@ -53,23 +53,27 @@ rotateMatrix270(myMatrix);
 
 # IRIS
 
+## Plot the Data Set
+
 Recreate the graphic for the IRIS Data Set using R.  Same titles, same scales, same colors.  See: https://en.wikipedia.org/wiki/Iris_flower_data_set#/media/File:Iris_dataset_scatterplot.svg
 
 ```{r iris-demo, fig.cap="Scatterplot of IRIS Dataset: Wikipedia(2020)", fig.height=6, fig.width=6}
 data(iris)
-
 pairs(iris[, 1:4], main="Iris Data (red=setosa,green=versicolor,blue=virginica)",
-      bg=c("red", "springgreen3", "blue")[iris$Species], col="black", pch=21,
-      cex.labels = 1, cex.axis=1, cex.main=1)
+      bg=c("red", "springgreen3", "blue")[iris$Species], col="black", pch=21, cex.labels = 1, cex.main=1)
 ```
+
+\noindent In making the plot above, I referenced websites to add the title \citep{plot:title}, change the font sizes \citep{change:plot:font:size}, and change the format of the points \citep{PCH:R}. 
+
+## Define the Data Set
 
 \noindent Write 2-3 sentences concisely defining the IRIS Data Set. Be certain the final writeup are your own sentences (make certain you modify what you find, make it your own, but also cite where you got your ideas from).
 \vskip 0.2in
 \noindent The IRIS Data Set provides the following characteristics relating the iris flower: sepal length, sepal width, petal length, and petal width (all in centimeters). The data set also specifies which species each recording is. The data set itself is home to information about 50 samples each of 3 different species of iris flower, 150 samples in total. \citep{IRIS:2019}
 
-\newpage
-
 # Personality
+
+## Cleanup Raw Data Set
 
 Import "personality-raw.txt" into R.  Remove the V00 column.
 
@@ -79,9 +83,7 @@ personality.data = read.csv(personality.raw, header=T, sep="|");
 personality.data = subset(personality.data, select=-c(V00))
 ```
 
-## Cleanup Raw Data Set
-
-Create two new columns from the current column "date_test":  year and week. Sort the new data frame by YEAR, WEEK so the newest tests are first ... The newest tests (e.g., 2020 or 2019) are at the top of the data frame.  Then remove duplicates using the unique function based on the column "md5_email".
+\noindent Create two new columns from the current column "date_test":  year and week. Sort the new data frame by YEAR, WEEK so the newest tests are first ... The newest tests (e.g., 2020 or 2019) are at the top of the data frame.  Then remove duplicates using the unique function based on the column "md5_email".
 
 ```{r personality-cleanup, message=FALSE}
 personality.data=personality.data[rev(order(as.Date(personality.data$date_test, format='%m/%d/%Y %H:%M'))),]
@@ -98,12 +100,17 @@ personality.data = subset(personality.data, select=-c(date_test))
 unique.by.email = unique(personality.data["md5_email"])
 personality.data.clean = personality.data[!duplicated(personality.data["md5_email"]),]
 ```
+\noindent The code above references a thread on Stack Overflow \citep{sort:date} to sort the dataframe and an article that explains how to remove duplicated data based on columns \citep{remove:duplicates}. This code also references the code that Dr. Shaffer posted in the discussion board regarding cleaning the personality data set. 
+
+## Export Clean Data Set 
 
 \noindent Save the data frame in the same "pipe-delimited format" ( | is a pipe ) with the headers. You will keep the new data frame as "personality-clean.txt" for future work (you will not upload it at this time). 
 
 ```{r personality-export, message=FALSE}
 write.table(personality.data.clean, "personality-clean.txt", sep="|")
 ```
+
+## Report Records 
 
 \noindent In the homework, for this tasks, report how many records your raw dataset had and how many records your clean dataset has.
 
@@ -113,11 +120,9 @@ dim(unique.by.email)
 dim(personality.data.clean)
 ```
 
-\noindent The raw dataset had 838 records and the clean dataset had 678 records.
+\noindent The raw dataset had 838 records and the clean dataset had 678 records. It is important to note that the number of unique emails found by the unique() command is also 678, implying that the duplicated() command was used properly above to remove duplicate email addresses.
 
 # Variance and Z-Scores
-
-Write functions for doSummary and sampleVariance and doMode.
 
 ```{r variance-include, message=FALSE}
 source_url(paste0(github.path, "master/functions/functions-variance.R"));
@@ -127,7 +132,7 @@ personality.vec = as.numeric(subset(personality.vec, select=-c(md5_email, year, 
 
 ## Variance
 
-Test these functions in your homework on the "monte.shaffer@gmail.com" record from the clean dataset.  Report your findings.
+Write functions for doSummary and sampleVariance and doMode. Test these functions in your homework on the "monte.shaffer@gmail.com" record from the clean dataset.  Report your findings.
 
 ```{r variance-demo}
 doSummary(personality.vec)
@@ -137,66 +142,70 @@ doSampleVariance(personality.vec, "na")
 zScores(personality.vec)
 ```
 
-The built in function to find standard deviation, sd(), uses the naive variance method. 
+\noindent Based on the results from performing the above functions on the “monte.shaffer@gmail.com” record from the clean dataset, the following conclusions can be drawn:
+\vskip 0.1in
+\noindent There are 60 entries, which correspond to the columns V01 to V60.
+\vskip 0.1in
+\noindent There are not any NA values in this data, which is expected because the data has been cleaned.
+\vskip 0.1in
+\noindent The mean and median test results are both 3.48, this suggests that the distribution of scores is symmetrical. This also suggests that the individual taking the test answer does not possess much bias, because 3.48 is almost exactly in the middle.
+\vskip 0.1in
+\noindent The mode tells us that the most common answer was 4.2.
+\vskip 0.1in 
+\noindent The naïve variance was significantly larger than the two-pass variance, suggesting that there may have been a small amount of “outlier” answers that are significantly higher or lower than the other answers.
+\vskip 0.1in
+\noindent The built in function to find standard deviation, sd(), uses the naive variance method. 
 
 ## Z-Scores
 
 For this "monte.shaffer@gmail.com" record, also create z-scores.  Plot(x,y) where x is the raw scores for "monte.shaffer@gmail.com" and y is the z-scores from those raw scores.  Include the plot in your assignment, and write 2 sentences describing what pattern you are seeing and why this pattern is present.
 
-```{r zscores-demo}
+```{r zscores-demo, fig.cap = "Raw Personality Scores vs. Z-Scores"}
 z.scores = zScores(personality.vec)
-plot(personality.vec, z.scores)
+plot(personality.vec, z.scores, main = "Raw Personality Scores vs. Z-Scores", xlab = "Raw Personality Scores", ylab = "Z-Scores")
 ```
+
+\noindent By just looking at this plot, it is reasonable to think that there are only 5 data points.  Upon further inspection, it seemed that many of the scores were repeated throughtout each of the vectors.
+
+```{r zscores-unique}
+unique(z.scores)
+unique(personality.vec)
+```
+
+\noindent To get a better idea of what was going on, I applied the unique() command to each vector and found that the personality vector only had 5 unique values, which corresponded to the 5 unique z-scores for those values. The points fall in a linear fashion, which makes sense because the same formula/ratio is used to find each z-score, there are essentially just different scalers.
 
 # Will vs. Denzel
 
 ```{r imdb-include, message=FALSE}
 source_url(paste0(github.path, "master/functions/functions-imdb.R"));
+source_url(paste0(github.path, "master/functions/functions-inflation.R"));
 ```
 
-## Will Smith
+Compare Will Smith and Denzel Washington.
 
-```{r will, fig.cap = c("Will Smith scatterplot: IMDB(2020)", "Will Smith boxplot raw millions: IMDB(2020)")}
+## Acquire necessary data from IMDB
+
+### Will Smith
+
+```{r will}
 nmid = "nm0000226";
   will = grabFilmsForPerson(nmid);
-  plot(will$movies.50[,c(1,6,7:10)]);
-  boxplot(will$movies.50$millions);
-    widx =  which.max(will$movies.50$millions);
-  will$movies.50[widx,];
-    summary(will$movies.50$year);  # bad boys for life ... did data change?
 ```
 
-## Denzel Washington
+### Denzel Washington
 
-```{r denzel, fig.cap = c("Denzel Washington scatterplot: IMDB(2020)", "Denzel Washington boxplot raw millions: IMDB(2020)")}
+```{r denzel}
 nmid = "nm0000243";
  	denzel = grabFilmsForPerson(nmid);
- 	plot(denzel$movies.50[,c(1,6,7:10)]);
-  	boxplot(denzel$movies.50$millions);
-		didx =  which.max(denzel$movies.50$millions);
-	denzel$movies.50[didx,];
-		summary(denzel$movies.50$year);
 ```
 
-## Side-by-Side Comparisons
+## Convert Raw Dollars to Dollars in 2000 to Account For Inflation
 
-### Top 50 Movies Using Raw Dollars
-
-```{r boxplotraw}
-par(mfrow=c(1,2));
-	boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
-	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
-	
-	par(mfrow=c(1,1));
-	
-```
-
-### Top 50 Movies Using Adjusted Dollars (2000)
+You will have to create a new variable millions.2000 that converts each movie's millions based on the year of the movie, so all dollars are in the same time frame.  You will need inflation data from about 1980-2020 to make this work.
+\vskip 0.2in
+\noindent The following two chunks of code use the inflation table, result, acquired from the inflation() function to convert the “movies.50.millions” column into values that are all the same scale. The scale used is what 1,000,000 dollars was worth in the year 2000. I first created data frames from the information from grabFilmsForPerson() for each of the actors. This may have not been the most efficient way to do this, but it still worked. I then iterated through each value in the “movies.50.millions” column for each actor and expressed those numbers in dollars in relation to what 1,000,000 dollars was worth in 2000. Those values then got added to different vectors for each actor and added as new columns on the data frames called “will.millions.2000” and “denzel.millions.2000”.
 
 ``` {r will2000}
-local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
-source(paste0(local.path, "functions/functions-inflation.R"), local=T);
-
 result= inflation()
 
 will.df = as.data.frame(will)
@@ -210,15 +219,10 @@ for (i in 1:50)
 }
 
 will.df$millions.2000 = will.millions.2000
-
+will$millions.2000=will.millions.2000
 ```
 
 ``` {r denzel2000}
-local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
-source(paste0(local.path, "functions/functions-inflation.R"), local=T);
-
-result= inflation()
-
 denzel.df = as.data.frame(denzel)
 
 denzel.millions.2000 = c()
@@ -230,21 +234,84 @@ for (i in 1:50)
 }
 
 denzel.df$millions.2000 = denzel.millions.2000
-
+denzel$millions.2000=denzel.millions.2000
 ```
+
+\newpage
+
+## Side-by-Side Comparisons
+
+### Top 50 Movies Using Raw Dollars
+
+```{r boxplotraw}
+par(mfrow=c(1,2));
+	
+  boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
+	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
+```
+
+\noindent Based on these boxplots, it seems reasonable to conclude that the movies that Will Smith has acted in have brought in more money than those that Denzel Washington has acted in. The minimum amount for both actors looks very close to 0, but it looks as though Will Smith has had a few movies that have brought in a very large amount of money. The top whisker on Will Smith's plot is very long, showing that the higher movies are likely outliers. The spread of income generated by Will Smith's movies is much larger than that of Denzel Washingtons. Both box plots have medians in about the same area.
+
+\newpage
+
+### Top 50 Movies Using Adjusted Dollars (2000)
 
 ```{r boxplotadjusted}
 par(mfrow=c(1,2));
-	boxplot(will$movies.50$millions, main=will$name, ylim=c(0,360), ylab="Raw Millions" );
-	boxplot(denzel$movies.50$millions, main=denzel$name, ylim=c(0,360), ylab="Raw Millions" );
-	
-	par(mfrow=c(1,1));
-	
+
+  boxplot(will$millions.2000, main=will$name, ylim=c(0,360), ylab="Millions reflecting Inflation", main.cex=0.5);
+  boxplot(denzel$millions.2000, main=denzel$name, ylim=c(0,360), ylab="Millions reflecting Inflation", main.cex=0.5);
 ```
 
-### Total Votes (Divide by 1,000,000 to scale)
+\noindent Based on these boxplots, I think that it is reasonable to say that Will Smith has brought in more money in the industry. Although it looks like the median for each of the actors is only about 25 million different, the maximum value (the top whisker), along with the third quartile are significantly higher for Will than they are for Denzel. The spread on the profit of movies that Will has been in is much higher than that of Denzel.
+
+\newpage
+
+### Total Votes
+
+```{r votes}
+par(mfrow=c(1,2));
+
+	boxplot(will$movies.50$votes, main=will$name, ylim=c(300,680000), ylab="Votes" );
+	boxplot(denzel$movies.50$votes, main=denzel$name, ylim=c(300,680000), ylab="Votes" );
+```
+
+\noindent These boxplots are relatively similar. The main difference that can be seen are the outliers in Will Smith’s plot, which all fall above 500,000 votes. Most of Will Smith's votes fall between 0 and 500,000, whereas Denzel Washington's only fall between 0 and 400,000. This can be found by looking at the whiskers of the plot. The median number of votes for Will Smith is slightly higher than that of Denzel Washington, but they both fall within +/- 25,000 of 100,000 votes. Based on the "box" in the plot, 50% of all movies for both actors look to have votes between about 25,000 and slightly over 200,000. Overall, Will Smith's first quartile, median, third quartile, and max are all larger than Denzel Washington's, suggesting that his movies received higher votes.
+
+\newpage
+
 ### Average Ratings
 
-### Year? Minutes? 
-### Metacritic (NA values)
+```{r ratings}
+par(mfrow=c(1,2));
 
+	boxplot(will$movies.50$ratings, main=will$name, ylim=c(1,9), ylab="Ratings" );
+	boxplot(denzel$movies.50$ratings, main=denzel$name, ylim=c(1,9), ylab="Ratings" );
+```
+
+\noindent The plots for both actors are relatively symmetrical, suggesting there is not significant skewing in the data. Will Smith has one outlier rating slightly above a 2. Although Will Smith's maximum rating is higher that Denzel Washington's, it looks as though Denzel's ratings are more consistant because the spread of his boxplot is not as large as Will Smiths. Denzel Washington's ratings have a higher minimum, first quartile, median, and third quartile than Will Smith. 
+
+\newpage
+
+### Year Released
+
+```{r year}
+par(mfrow=c(1,2));
+
+	boxplot(will$movies.50$year, main=will$name, ylim=c(1980,2020), ylab="Years" );
+	boxplot(denzel$movies.50$year, main=denzel$name, ylim=c(1980,2020), ylab="Years" );
+```
+
+\noindent Based on these boxplots, I concluded that Will Smith’s popular movies are generally more recent than Denzel Washington’s. Denzel Washington also has much more of spread in years than Will Smith does based on the minimum and maximum shown by the whiskers. The median release year for Will Smith is somewhere around 2005, whereas the median for Denzel Washington looks to be around 1999. Both box plots are relatively symmetrical, signifying that the distribution is not overly skewed.
+
+\newpage
+
+### Length of Movie (in minutes)
+```{r minutes}
+par(mfrow=c(1,2));
+
+  boxplot(will$movies.50$minutes, main=will$name, ylim=c(80, 205), ylab="Length of Movie (minutes)");
+  boxplot(denzel$movies.50$minutes, main=denzel$name, ylim=c(80, 205), ylab="Length of Movie (minutes)");
+```
+
+\noindent These boxplots are relatively similar. The main difference that can be seen is the outlier in Denzel Washington’s plot around the 200-minute mark. Other than the one outlier, it appears that the movies that both actors have been in range from about 80 minutes to 160 minutes, based on the spread of the whiskers. The median number of minutes for both actors looks to be between 100 and 125 minutes, and 50% of all movies for both actors look to be between 100 and 130 minutes based on the "box” part of the boxplot.
