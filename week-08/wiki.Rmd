@@ -1,0 +1,174 @@
+---
+title: 'R Notebook sandbox: Playing with Wikipedia'
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
+    number_sections: true
+my-var: "monte"  # https://bookdown.org/yihui/rmarkdown/html-document.html
+---
+# Top of the world
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE);
+knitr::opts_chunk$set(warning = FALSE);
+knitr::opts_chunk$set(message = FALSE);
+
+## this should knit, but I am running some IMDB stuff
+## so I wasn't able to verify a final Knit.
+## please let me know in the Discussion Board if you
+## find any errors, and I will fix
+
+# we don't want scientific notation
+options(scipen  = 999);
+```
+
+A comment about this notebook:  trying to Knit does not make much sense, run one chunck at a time, and observe.  
+
+
+# Parsing Content From Wikipedia
+
+In this notebook, we are going to parse some data from wikipedia.  Some of it was simple, and other elements were tricky.  For simple, I used `rvest`.  For not-so-simple, I used `xml2` which `rvest` is built upon.  And for the really tricky ones, I used my past experience.  For small datasets, these `R` approaches are fine, but if you want to do some serious data harvesting and parsing, you should use the C-based language that is the fastest in the world at parsing.  That would not be `R`. 
+
+**War story rant** ... I have probably downloaded over 15 million pages over the last 10 years or so.  That is direct downloads, you parallel-process and you don't over-slurp, you do not want to be a DDOS attack.  I also have downloaded large tar.gz time files and processed them.  Of interest to some of you may be the OCR project we did with older patents, such as Abraham Lincoln's 6469 patent.  We used `tesseract` to OCR over 100 million patent pages and do cleanup procedures on old ones.  At the time, our quality was better than Google patents (e.g., 2014-ish).  Likely, it still may be today.  If you care about clean data, then you make efforts to clean the data.  You can see a few YouTube videos on how to train `tesseract` to be smarter.  It doesn't work.  We need a new engine.  A better engine.  A grid-approach engine that could use modern-GPUs.  Our Phase I proposal was a bit of money, but we did not receive funding in Phase II to make that new grid-approach engine a reality.  Not the end of the world, but I will stop with my sidebar...
+
+From Wikipedia, we are going to grab some basic data from a page, if it exists; otherwise, we will return (NA).  Good data provenance is about keeping a "chain of custody" with your process.  So at times, I could go back and change a previous `for-loop` but it makes it more difficult to review later.  I call this the "sweeping" approach.  Do one sweep at a time, keep them independent.  You may have to rewind to a certain "sweep" stage, but that is fine.  Each stage should have an objective.
+
+* Download and Cache the webpage.  Simple enough objective and essential for good data provenance.  I can still use `rvest` but I will develop my own caching mechanisms.
+
+* Parsing strategies.  Again, cache anything that has already been parsed.  The next time, it just grabs the result and moves own.  If you code in a "parallel" form, you are copying/pasting code blocks and making minimal changes.  Some believe there is a "perfect abstract" solution.  Maybe there is, but I can get to work and use "git r done" and have millions of pages downloaded and parsed before you finish your perfect "abstraction" solution.
+
+* `Latitude/Longitude`: If the webpage has this, it will grab the first instance.  On most city/state pages, that is the correct form.  Some UTF-8 issues will arise, I tried to pass `https://en.wikipedia.org/wiki/Ober%C3%A1` into the system, and it failed miserably, as in crashing both RGui and RStudio a few days ago.  Tools->Global Options->Code->Saving ... select UTF-8 ... I had written a function to deal with the latitude/longitude degree symbols an it created havoc.  Even on github.  The `a grave` in `Ober%C3%A1` was not friendly.  I have also noticed that if I choose UTF-8 to save data files in ".rds" format, the file compression gain is now a loss.  So it is something to be aware of, and I will probably ignore encoding="UTF-8" unless it really mattes.
+
+* `Tables` in general: I look for all tables, then do a wildcard search on the content looking for a known unique data element (e.g., "`*Climate Data`").
+
+* `Climate Data`: This is a common table that has temperature, precipitation, and for some locations, so much more (e.g., compare `Whitefish, Montana` to `Manhattan` [New York]).  I could have grabbed just the top-half of each row, but in this "sweep" I am already coding, so I have this inclination to get all the relevant data.  `units=1` is the top value and `units=2` is the bottom value, if it exists.
+
+* `Historic Population`: This is decade-level census data (every 10 years) with some surprise bonus data.  This is a vertically-formatted table and the basic `rvest::html_tabl` fails spectacularly.  After trying to use their tools, I just did the "hold my rootbeer" thing and did it my own way.
+
+* `State Capitals`:  I will demonstrate a few pages, one-offs, where you have to know the URL of Wikipedia to make it happen.  Then I parse <https://en.wikipedia.org/wiki/List_of_capitals_in_the_United_States#State_capitals> which `rvest` handles nicely, so there is little for me to do.  Since each state capital probably has a history elsewhere on the page, I had to use a unique wildcard search to guarantee the result ... 
+
+`my.table = wiki.findMyTable(tables,"*2716.7*");  # Alaska area should be unique`
+
+
+```{r, chunck-load-libraries-functions}
+library(devtools);
+library(humanVerseWSU);
+packageVersion("humanVerseWSU");  # should be ‘0.1.4’+
+
+library(rvest);
+library(magrittr);
+# how long after commit/push before "raw" becomes live?
+# unraw was immediate ...  3:50 AM ... about 7 minutes https://github.com/MonteShaffer/humanVerseWSU/blob/master/humanVerseWSU/R/functions-cleanup.R
+# sometimes it is immediate ...
+
+path.github = "https://raw.githubusercontent.com/MonteShaffer/humanVerseWSU/master/";
+
+# a few DMS <--> DEC conversion tools for lat/long ... in the end, I didn't need them ...
+# source("C:/_git_/MonteShaffer/humanVerseWSU/humanVerseWSU/R/functions-maths.R");
+## I reorganized the `grabHTML` function that is the key driver of the caching system ... It is not compiled yet, so grab it from its source_url
+source_url( paste0(path.github, "humanVerseWSU/R/functions-file.R") );
+
+## I may never directly wrap them into the library ... harvesting/parsing are tasks/processes that need to be performed and documented, that does not mean they belong as "public functions" in the library 
+source_url( paste0(path.github, "humanVerseWSU/R/functions-wikipedia.R") );
+
+# UTF encoding issues ... notice the degree symbol, the single quote that is not really, and the double-quote that is not really...
+# wiki.cleanupDMStoDecLatitudeLongitude("48°22′13″N 114°11′20″W");
+# the above function can be found in humanVerseWSU/compiling/_stuff_/ just as an archive ...
+
+```
+
+# Local Data Storage
+
+We need a location to store our data (page.html).  I will create folder name, based on the wiki-page name.  I have a way to convert `back-and-forth` if necessary, see: `wiki.parseWikiPageToString` and `wiki.parseWikiStringBackToPage`.  Files that will currently be stored in the folder, see your version of `R:\Wikipedia\en^wikipedia^org-wiki-Atlanta\`
+
+* `page.html` is the raw.html file
+* `coordinates.txt` contains latitude/longitude
+* `climate.html` and `climate.rds` and temporary in-between file to allow `xml2::` to play nice with my custom code
+* `population.txt` contains the historical population data
+
+
+```{r, chunck-prep-data-storage}
+
+local.data.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/week-08/";  # to store HTML files, cached data-objects
+      # I generally use large drives because they fill up
+      # Having the C:/ run out can be bad 
+      # Today's project [~6MB zipped]
+path.wiki = paste0(local.data.path,"Wikipedia/");
+createDirRecursive(path.wiki);
+
+```
+
+You can read the functions if you would like, but let's try out my hometown `Columbia Falls, Montana` ...
+
+## Download the file
+
+```{r, chunck-first-example-download}
+
+wiki.url = "https://en.wikipedia.org/wiki/Sandpoint,_Idaho";
+
+wiki.info = wiki.downloadWikiPage(wiki.url, path.wiki);
+    str(wiki.info);
+
+# check your folder and make certain 'page.html' lives in the expected folder
+
+```
+## Let's do some parsing
+
+```{r, chunck-first-example-parser}
+
+latlong = wiki.findCoordinates(wiki.info$path.wiki.page, wiki.info$wiki.html); 
+    latlong;
+population = wiki.historicalPopulation(wiki.info$path.wiki.page, wiki.info$wiki.html);
+    population;
+climate = wiki.parseAverageClimate(wiki.info$path.wiki.page, wiki.info$wiki.html);
+  str(climate);  # doesn't exist ...
+
+```
+Check out `coordinates.txt` and `population.txt` ... there is not any `climate-data` because the page doesn't have it.
+
+## Another place nearby Whitefish, Montana
+
+I was technically born in the `Whitefish hospital`, so let's do that one next.  It has climate data.
+
+
+```{r, chunck-example-Whitefish}
+
+wiki.url = "https://en.wikipedia.org/wiki/Whitefish,_Montana";
+
+wiki.info = wiki.downloadWikiPage(wiki.url, path.wiki);
+    str(wiki.info);
+
+latlong = wiki.findCoordinates(wiki.info$path.wiki.page, wiki.info$wiki.html); 
+    latlong;
+population = wiki.historicalPopulation(wiki.info$path.wiki.page, wiki.info$wiki.html);
+    population;
+climate = wiki.parseAverageClimate(wiki.info$path.wiki.page, wiki.info$wiki.html);
+  str(climate);  
+
+
+climate$df;
+```
+## Wenatchee, Washington
+
+The climate data is similar, but the data frame is not exactly the same size.
+
+```{r, chunck-example-Wenatchee}
+
+wiki.url = "https://en.wikipedia.org/wiki/Wenatchee,_Washington";
+
+wiki.info = wiki.downloadWikiPage(wiki.url, path.wiki);
+    str(wiki.info);
+
+latlong = wiki.findCoordinates(wiki.info$path.wiki.page, wiki.info$wiki.html); 
+    latlong;
+population = wiki.historicalPopulation(wiki.info$path.wiki.page, wiki.info$wiki.html);
+    population;
+climate = wiki.parseAverageClimate(wiki.info$path.wiki.page, wiki.info$wiki.html);
+  str(climate);  
+
+climate$df;
+```

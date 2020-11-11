@@ -1,0 +1,209 @@
+---
+output:
+  pdf_document:
+    keep_tex: true
+    fig_caption: true
+    toc: true
+    toc_depth: 3 
+    number_sections: true
+    citation_package: natbib
+    latex_engine: pdflatex
+    template: ./../latex-templates/report.tex
+  html_document:
+    df_print: paged
+    
+title: "The Ideal Human"
+subtitle: "How body proportions of modern humans compare to those of Leonardo da Vinci's Vitruvian Man"
+author: 
+- name: "Jailee Foster"
+  affiliation: "Washington State University"
+abstract: |
+  In this article, I compare three of the proportions found in Leonardo da Vinci's Vitruvian Man to measurements collected on adults in 2020. This is achieved by first writing the height of each subject as a factor of their head height, their foot length, and their hand length. 
+sectionnumberdepth: 3
+titleEndnotes: "ENDNOTES"
+titleReferences: "Bibliography"
+columnsReferences: 1
+titleTOC:  "CONTENTS"
+bibliography: ./../biblio/master.bib
+bibliostyle: ./../biblio/ormsv080.bst
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\section{Introduction}
+\label{sec:intro}
+
+\paragraph{} Over 500 years ago, Leonardo da Vinci crafted the \emph{Vitruvian Man}, a drawing depicting his idea of the ideal proportions a human body should possess. Da Vinci's drawing was influenced by Roman architect Vitruvius' \emph{De architectura}, a book detailing the design of the human body \citep{Wikipedia:Vitruvian}. 
+
+\section{Research Question: How do the proportions in \emph{Vitruvian Man} compare to the measurements of adults today?}
+\label{sec:rq}
+
+\paragraph{} I set out to compare three proportions described in \emph{Vitruvian Man}, the proportion of height to each of hand length, head height, and foot length. The sample consisted of 196 adults (over 18) from a range of ethnicities.
+
+\subsection{Is the average humans height equal to ten times the length of their hand?}
+\paragraph{} Hand length is defined as the length from the tip of the middle finger to the wrist when the hand is open. Text that is found on the drawing itself can be translated as "...the length of the hand is one-tenth of the height of a man" \citep{Wikipedia:Vitruvian}.
+\label{sec:rq2}
+
+
+\subsection{Is the average human's height equal to 8 times the height of their head?}
+\label{sec:rq3}
+\paragraph{} Part of the text from the drawing is translated to "from below the chin to the top of the head is one-eighth of the height of a man" \citep{Wikipedia:Vitruvian}. Therefore, I will explore whether or not it is valid to assume that the average human's height is equal to the height of 8 of their heads.
+
+\subsection{Is the average human's height equal to 7 times the length of their foot?}
+\label{sec:rq4}
+\paragraph{} The length of the foot can be found by measuring from the tip of the big toe to the edge of the heel. Da Vinci noted in his drawing that "the foot is one-seventh of the height of a man" \citep{Wikipedia:Vitruvian}.
+
+\begin{figure}[!ht]
+    \begin{subfigure}[h]{\textwidth}
+    \centering
+    %  trim={<left> <lower> <right> <upper>}
+    % https://shantoroy.com/latex/add-subfig-in-latex/
+            \includegraphics[trim = 0 0 0 0,clip,scale=0.5]{figures/final-image.pdf}
+        \label{fig:sub-first}
+    \end{subfigure}
+    \vspace{2.5mm}
+    \hrule
+    \vspace{2.5mm}
+        \caption{\textbf{Vitruvian Man proportions shown visually:} Are there differences in the ideal measurements as presented by Leonardo Da Vinci in his Vitruvian man and measurements performed on 196 adults? Specifically, is the height of an adult equivalent to 10 times his hand length, 8 times his head height, and 7 times his foot length? \citet{Wikipedia:Vitruvian} \tiny\emph{\newline\newline Figure components came from the following websites: \newline https://www.vectorstock.com/royalty-free-vector/illstration-human-body-icon-outline-vector-29311539\newline  https://www.shutterstock.com/search/feet+outline \newline  http://alfa-img.com/show/female-blank-head-outline.html}}
+        \label{fig:combined}
+    \vspace{-2.5mm}
+    \hrule
+\end{figure}
+
+
+\section{Data Description}
+\label{sec:data}
+
+\paragraph{} As a class (WSU Stat 419, Multivariate Statistics), we set out to collect data that would allow us to perform analysis on the different ratios found on the human body. Each data collector compiled a handout, which was used to collect their portion of the necessary data (see Section \ref{sec:appendix-data-handout}). The resulting data set contained fourteen measurements, some of which were performed on each side of the body. 
+
+Every set of measurements that was performed was assessed for quality, and given a number on a scale from 1 to 10 (1 being lowest quality, 10 being highest quality). The average rating for the quality of the data used in this analysis is slightly under 9 (M = 8.62). Measurements were collected on people from a wide range of ethnicities.
+
+\input{tables/measure-table-final}
+\label{table}
+
+\subsection{Summary of Sample}
+\label{sec:data-sample}
+\paragraph{} I found that the mean height of adults in the sample expressed in foot lengths was between 6 and 7 (M=6.8, D=0.39). The average height of adults in the sample expressed in hand lengths was slightly above 9 (M=9.3, SD=0.62) and the mean height expressed in head height was between 7 and 8 (M=7.7, SD-0.78) (see Table 1 above). All three of these averages is less than the ratios presented in \emph{Vitruvian Man}.
+
+Furthermore, the table shows that foot length, hand length, and head height were all positively correlated with height in our analysis. All three of these measurements had a correlation significance of p<0.001, suggesting that these correlations are all strong.
+
+\section{Key Findings}
+\label{sec:findings}
+\paragraph{} On each of the three t-tests that were performed, the null hypothesis was that there was no difference between the ratios found from \emph{Vitruvian Man} and those found in our sample. The alternate hypothesis in each case is that the ratios between the two differ (two-tailed text). Each test was performed at a 95% significance level, with $\alpha = .05$.
+
+The t-test performed on the height with respect to hand length resulted in p-value of 0.00 (p=2.2e-16). Because this is less than .05, the null hypothesis, the sample mean of height expressed in hand lengths is equal to 10, is rejected, and we can conclude that the hand length of the average adult is not one-tenth of their total height. Therefore, the answer to our first research question is no, the average adult's height is not equal to ten times the length of their hand.
+
+The t-test performed on the height with respect to head height resulted in p-value of 0.00 (p=5.664e-08). Because this is less than .05, the null hypothesis, the sample mean of height expressed in head heights is equal to 8, is rejected, and we can conclude that the hand length of the average adult is not one-eighth of their total height. Therefore, the answer to our second research question is no, the average adult's height is not equal to eight times the height of their head.
+
+The t-test performed on the height with respect to foot length also resulted in p-value of 0.00 (p=1.819e-08). Because this is less than .05, the null hypothesis, the sample mean of height expressed in foot lengths is equal to 7, is rejected. Thus, we can conclude that the hand length of the average adult is not one-seventh of their total height and the answer to our third research question is no, the average adult's height is not equal to seven times the length of their foot.
+
+\section{Conclusion}
+\label{sec:conclusion}
+\paragraph{} The answer to all three of our research subquestions was that no, the height of the average adult could not be expressed as eight of their head heights, seven of their foot lengths, or 10 of their hand lengths. Thus, the answer to the overarching question, "How do the proportions in \emph{Vitruvian Man} compare to the measurements of adults today?" is that da Vinci's proposed proportions are not valid in the average adult. The number of heads, hands, and feet that make up the height of someone appears to be slightly smaller than what da Vinci proposed. 
+
+\newpage
+
+\section{Appendices}
+\label{sec:appendix}
+
+
+\subsection{Data Collection Handout}
+\label{sec:appendix-data-handout}
+
+\begin{figure}[!ht]
+	\hrule
+	\caption{ \textbf{Handout Page 1} }
+	\begin{center}
+	    \scalebox{0.9}{	\includegraphics[trim = 0 0 0 0,clip,width=0.85\textwidth]{pdfs/handout.pdf} }
+	\end{center}
+	\label{fig:handout-1}
+	\hrule
+\end{figure}
+
+
+\newpage
+
+\subsection{Analysis}
+\subsubsection{Updating Libraries and Sourcing Functions}
+Below are the necessary functions and libraries required to run the code referenced in this document.
+
+```{r,appendix-setup,message=FALSE}
+
+# load libraries
+
+library(devtools);       # required for source_url
+library(humanVerseWSU);  # if humanVerseWSU is installed on machine
+
+# source functions 
+
+path.humanVerseWSU = "https://raw.githubusercontent.com/MonteShaffer/humanVerseWSU/"
+source_url( paste0(path.humanVerseWSU,"master/misc/functions-project-measure.R") );
+
+# github.path = "https://raw.githubusercontent.com/jaileefoster/WSU_STATS419_FALL2020/";
+# source_url(paste0(github.path, "master/functions/functions-project-measure.R"));
+
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/functions-project-measure.R"), local=T)
+```
+
+
+\subsubsection{Prepare the Data for Analysis}
+
+Below is the code to load the data into a data frame and prepare it for analysis. This process included determining specific columns to be used in analysis, discarding any NA values, and checking for and removing any extreme outliers. At this time, three new columns were added to the data frame, one of which represented height as a factor of the person's foot length, one representing height as a factor of the person's hand length, and the last representing height as a factor of the person's head height.
+
+
+```{r,appendix-secret,message=FALSE, results="hide"}
+
+# load the data
+
+path.to.secret = "/Users/jaileefoster/Desktop/stat419/_git_/secret/";
+measure.df = read.csv( paste0(path.to.secret, "final.measure.txt"), header=TRUE, 
+                           quote="", sep="|");
+
+# save the prepared data in a new data frame
+
+measure.clean = prepareMeasureData(measure.df);
+```
+
+\subsubsection{Generate Correlation Table}
+
+Below is the code to generate the summary statistics, mean and standard deviation, and correlation coefficients and save them in the table that you see in Section \ref{sec:data-summary}.
+
+```{r,appendix-summary,message=FALSE}
+
+# set table directory
+
+path.tables = '/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/project-measure/tables/'
+createDirRecursive(path.tables)
+
+# create correlation table
+
+file.correlation = paste0(path.tables,"measure-table-final.tex") 
+myData = as.matrix(measure.clean)
+
+buildLatexCorrelationTable(myData, 
+                           rotateTable = TRUE, 
+                           width.table = 0.9, 
+                           myFile = file.correlation, 
+                           showOnes = "center",
+                           width.names = "50mm",
+                           myNames = c("Height (in)", "Foot Length (in)", 
+                                       "Hand Length (in)", "Head Height (in)", 
+                                       "Height (in foot lengths)", 
+                                       "Height (in hand lengths)", 
+                                       "Height (in head heights)"), 
+                           myCaption = "Descriptive Statistics and Correlation Analysis 
+                                        for Measurments in Adults")
+```
+\subsubsection{Perform T-Tests}
+
+Below is the code used to perform the three t-tests on the three different hypothesis. For each t-test, the null hypothesis is that the true mean of the population of present day adults is equal to the target obtained from the Vitruvian Man model. The alternative hypothesis for each is that the true mean of the population of present day adults varies from the target obtained from the Vitruvian Man model (two-sided test). The confidence level for each of the three t-tests is 95% ($\alpha = 0.05$).
+
+```{r,appendix-analysis, message=FALSE,results="hide"}
+performTTestOnHeightAsFactorOfFootLength(measure.clean)
+performTTestOnHeightAsFactorOfHandLength(measure.clean)
+performTTestOnHeightAsFactorOfHeadHeight(measure.clean)
+```

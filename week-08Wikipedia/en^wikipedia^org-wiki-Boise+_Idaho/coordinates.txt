@@ -1,0 +1,2 @@
+latitude|longitude
+43.61583|-116.20167

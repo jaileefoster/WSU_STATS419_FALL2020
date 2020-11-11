@@ -1,0 +1,2 @@
+latitude|longitude
+44.31056|-69.77944
