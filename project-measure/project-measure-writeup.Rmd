@@ -18,12 +18,11 @@ author:
 - name: "Jailee Foster"
   affiliation: "Washington State University"
 abstract: |
-  In this article, I compare three of the proportions found in Leonardo da Vinci's Vitruvian Man to measurements collected on adults in 2020. This is achieved by first writing the height of each subject as a factor of their head height, their foot length, and their hand length. 
+  In this paper, I compare three of the proportions found in Leonardo da Vinci's Vitruvian Man to measurements collected on adults in 2020. This is achieved by first expressing the height of each subject as a factor of their head height, their foot length, and their hand length. T-tests were then performed on each factor to determine whether they were significantly different than the proportions that da Vinci proposed. From my findings, I have concluded that the ratios of the Vitruvian Man do not hold up in today's average adults.
 sectionnumberdepth: 3
-titleEndnotes: "ENDNOTES"
-titleReferences: "Bibliography"
+titleReferences: "References"
 columnsReferences: 1
-titleTOC:  "CONTENTS"
+titleTOC:  "Contents"
 bibliography: ./../biblio/master.bib
 bibliostyle: ./../biblio/ormsv080.bst
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -206,4 +205,12 @@ Below is the code used to perform the three t-tests on the three different hypot
 performTTestOnHeightAsFactorOfFootLength(measure.clean)
 performTTestOnHeightAsFactorOfHandLength(measure.clean)
 performTTestOnHeightAsFactorOfHeadHeight(measure.clean)
+```
+
+\subsection{Data Quality}
+
+Below is the code that I used to find the average quality of the data that I analyzed. 
+
+```{r,appendix-quality, message=FALSE,results="hide"}
+averageDataQuality(measure.df);
 ```

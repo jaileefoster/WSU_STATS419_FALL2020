@@ -234,7 +234,7 @@ University}  }
 %\renewcommand{\theendnote}{\textbf{\arabic{endnote}}}
 
 
-\renewcommand*{\notesname}{ENDNOTES}
+\renewcommand*{\notesname}{}
 
 \makeatletter
 \def\enoteheading{\section*{\notesname
@@ -243,9 +243,9 @@ University}  }
 \makeatother
 
 
-\renewcommand*{\contentsname}{CONTENTS}
+\renewcommand*{\contentsname}{Contents}
 
-\renewcommand*{\refname}{Bibliography}
+\renewcommand*{\refname}{References}
 
 
 %\usepackage{subfigure}
@@ -360,10 +360,14 @@ State University}
 
     \vskip 8.5pt % \small 
 
-\noindent In this article, I compare three of the proportions found in
+\noindent In this paper, I compare three of the proportions found in
 Leonardo da Vinci's Vitruvian Man to measurements collected on adults in
-2020. This is achieved by first writing the height of each subject as a
-factor of their head height, their foot length, and their hand length.
+2020. This is achieved by first expressing the height of each subject as
+a factor of their head height, their foot length, and their hand length.
+T-tests were then performed on each factor to determine whether they
+were significantly different than the proportions that da Vinci
+proposed. From my findings, I have concluded that the ratios of the
+Vitruvian Man do not hold up in today's average adults.
 
 
     
@@ -660,6 +664,17 @@ test). The confidence level for each of the three t-tests is 95\%
 \FunctionTok{performTTestOnHeightAsFactorOfFootLength}\NormalTok{(measure.clean)}
 \FunctionTok{performTTestOnHeightAsFactorOfHandLength}\NormalTok{(measure.clean)}
 \FunctionTok{performTTestOnHeightAsFactorOfHeadHeight}\NormalTok{(measure.clean)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Data Quality}
+
+Below is the code that I used to find the average quality of the data
+that I analyzed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{averageDataQuality}\NormalTok{(measure.df);}
 \end{Highlighting}
 \end{Shaded}
 

@@ -114,20 +114,22 @@ path.to.secret = "/Users/jaileefoster/Desktop/stat419/_git_/secret/";
 measure.df = read.csv( paste0(path.to.secret, "final.measure.txt"), header=TRUE, 
                            quote="", sep="|");
 
-# create a data frame that only holds measurements for adults (18+)
-measure.df = subset(measure.df, measure.df$age > 18)
+prepareMeasureData
 
-# create a data frame that only holds measurements we are interested in
-measure.df = na.omit(subset(measure.df, select = c(height, foot.length, hand.length, head.height)))
-
-# identify any extreme outliers and remove them from the dataset
-findOutliersUsingZscores(measure.df$height)
-findOutliersUsingZscores(measure.df$hand.length)
-findOutliersUsingZscores(measure.df$foot.length)
-findOutliersUsingZscores(measure.df$head.height)
-
-# measure.clean is the final data frame that we will be working with
-measure.clean = subset(measure.df, (measure.df$hand.length < 50 & measure.df$hand.length > 5) & (measure.df$foot.length > 5.315 & measure.df$foot.length < 14.9) & (measure.df$head.height < 12))
+# # create a data frame that only holds measurements for adults (18+)
+# measure.df = subset(measure.df, measure.df$age > 18)
+# 
+# # create a data frame that only holds measurements we are interested in
+# measure.df = na.omit(subset(measure.df, select = c(height, foot.length, hand.length, head.height)))
+# 
+# # identify any extreme outliers and remove them from the dataset
+# findOutliersUsingZscores(measure.df$height)
+# findOutliersUsingZscores(measure.df$hand.length)
+# findOutliersUsingZscores(measure.df$foot.length)
+# findOutliersUsingZscores(measure.df$head.height)
+# 
+# # measure.clean is the final data frame that we will be working with
+# measure.clean = subset(measure.df, (measure.df$hand.length < 50 & measure.df$hand.length > 5) & (measure.df$foot.length > 5.315 & measure.df$foot.length < 14.9) & (measure.df$head.height < 12))
 
 ```
 
@@ -240,27 +242,59 @@ path.tables = '/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/p
 createDirRecursive(path.tables)
 
 # create correlation table
-file.correlation = paste0(path.tables,"measure-table-final.tex") 
+file.correlation = paste0(path.tables,"measure-table-final3.tex") 
 myData = as.matrix(measure.clean)
 
-buildLatexCorrelationTable(myData, rotateTable = FALSE, width.table = 0.85, 
-                           myFile = file.correlation, myNames = c("Height (in)", "Foot Length (in)", "Hand Length (in)", "Head Height (in)"), myCaption = "Descriptive Statistics and Correlation Analysis for Measurments in Adults")
+buildLatexCorrelationTable(myData, rotateTable = TRUE, width.table = 0.8, 
+                           myFile = file.correlation, myNames = c("Height (in)", "Foot Length (in)", "Hand Length (in)", "Head Height (in)", "Height (in foot lengths)", "Height (in hand lengths)", "Height (in head heights)"), myCaption = "Descriptive Statistics and Correlation Analysis for Measurments in Adults")
 
 ```
-
+```{r,quality}
+mean(measure.df$quality)
+```
 ``` {r,functions}
-source = 
-measure.clean.2 = measure.clean
+local.path = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/";
+source(paste0(local.path, "functions/functions-project-measure.R"), local=T)
+
+path.to.secret = "/Users/jaileefoster/Desktop/stat419/_git_/secret/";
+measure.df = read.csv( paste0(path.to.secret, "final.measure.txt"), header=TRUE, 
+                           quote="", sep="|");
+
+measure.clean = prepareMeasureData(measure.df);
+
+averageDataQuality(measure.df);
 
 
-measure.clean$height.as.foot.length = NA
-measure.clean$height.as.foot.length = measure.clean$height / measure.clean$foot.length
 
-measure.clean$height.as.hand.length = NA
-measure.clean$height.as.hand.length = measure.clean$height / measure.clean$hand.length
-
-measure.clean$height.as.head.height = NA
-measure.clean$height.as.head.height = measure.clean$height / measure.clean$head.height
+# 
+# measure.clean$height.as.foot.length = NA
+# measure.clean$height.as.foot.length = measure.clean$height / measure.clean$foot.length
+# 
+# measure.clean$height.as.hand.length = NA
+# measure.clean$height.as.hand.length = measure.clean$height / measure.clean$hand.length
+# 
+# measure.clean$height.as.head.height = NA
+# measure.clean$height.as.head.height = measure.clean$height / measure.clean$head.height
 
 ```
 
+```{r,hand}
+# small p means reject
+#mean(measure.clean$height.as.hand.length)
+t.test(measure.clean$height.as.hand.length, mu = 10, conf.level = 0.99) # not equal to
+t.test(measure.clean$height.as.hand.length, mu = 10, conf.level = 0.99, alternative = 'less') # less than
+```
+
+
+```{r,foot}
+# small p means reject
+mean(measure.clean$height.as.foot.length)
+t.test(measure.clean$height.as.foot.length, mu = 7, conf.level = 0.99) # not equal to
+t.test(measure.clean$height.as.foot.length, mu = 7, conf.level = 0.99, alternative = 'less') # less than
+```
+
+```{r,head}
+# small p means reject
+
+t.test(measure.clean$height.as.head.height, mu = 8, conf.level = 0.95) # not equal to
+```
