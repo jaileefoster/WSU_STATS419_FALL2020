@@ -1,0 +1,99 @@
+---
+title: 'R Notebook: Will vs. Denzel creating rds files'
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 5
+    fig_caption: true
+    number_sections: true 
+---
+```{r}
+
+library(devtools);
+
+library(humanVerseWSU);
+
+path.github = "https://raw.githubusercontent.com/MonteShaffer/humanVerseWSU/master/";
+
+include.me = paste0(path.github, "misc/functions-nlp.R");
+source_url( include.me );
+include.me = paste0(path.github, "misc/functions-nlp-str.R");
+source_url( include.me );
+include.me = paste0(path.github, "misc/functions-nlp-stack.R");
+source_url( include.me );
+include.me = paste0(path.github, "misc/functions-nlp-pos.R");
+source_url( include.me );
+
+include.me = paste0(path.github, "humanVerseWSU/R/functions-encryption.R");
+source_url( include.me );
+include.me = paste0(path.github, "humanVerseWSU/R/functions-str.R");
+source_url( include.me );
+
+
+path.to.nascent = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/nascent/";
+
+folder.nlp = "nlp/";
+path.to.nlp = paste0(path.to.nascent, folder.nlp);
+
+
+###### UPDATES TO dataframe subset function ######
+# inflation adjustments for NA ... and improvements on subsetting
+include.me = paste0(path.github, "humanVerseWSU/R/functions-dataframe.R");
+source_url( include.me );
+
+include.me = paste0(path.github, "humanVerseWSU/R/functions-inflation.R");
+source_url( include.me );
+```
+
+# IMDB Library
+
+```{r}
+library(imdb);
+```
+
+## Load data
+
+
+```{r}
+imdb::loadDataIMDB();
+names(imdb.data);
+
+humanVerseWSU::loadInflationData();
+
+will.search = IMDB.searchPersonName("Will* Smith*");
+will.nmid = will.search$nmid[1]
+
+denzel.search = IMDB.searchPersonName("Denzel* Washington*");
+denzel.nmid = denzel.search$nmid[1]
+```
+
+# Access the data of interest and save as a .rds file to be read in so that the code can be ran remotely / knitted to html.
+
+``` {r}
+# saveRDS(actorRank.df, "actorRank2000.rds")
+headliners.actors = imdb.data$headliners$actors
+headliners.actors = as.data.frame(headliners.actors)
+will.nmid %in% headliners.actors$headliners.actors
+denzel.nmid %in% headliners.actors$headliners.actors
+
+
+saveRDS(headliners.actors, "headlinersActors.rdx")
+```
+
+# Load in the data
+
+``` {r}
+actorRank2000 <- readRDS(paste0(path.to.nascent, "actorRank2000.rds"))
+movieRank2000 <- readRDS(paste0(path.to.nascent, "movieRank2000.rds"))
+
+```
+
+# Check to see if either of the actors are headliners.
+
+``` {r}
+headliners.actors = imdb.data$headliners$actors
+headliners.actors = as.data.frame(headliners.actors)
+will.nmid %in% headliners.actors$headliners.actors
+```

@@ -29,7 +29,8 @@ source_url( include.me );
 
 include.me = paste0(path.github, "humanVerseWSU/R/functions-encryption.R");
 source_url( include.me );
-
+include.me = paste0(path.github, "humanVerseWSU/R/functions-str.R");
+source_url( include.me );
 
 
 path.to.nascent = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/nascent/";
@@ -56,7 +57,7 @@ This dataset will be the source you will use on your final exam to answer the qu
 
 ```{r}
 # library(devtools);
-# install_github("MonteShaffer/imdb/imdb"); # choose #3 to humanVerseWSU
+# install_github("MonteShaffer/imdb/imdb", force=TRUE); # choose #3 to humanVerseWSU
 # detach(package:imdb);
 library(imdb);
 packageVersion("imdb");  # ‘0.1.1’

@@ -32,7 +32,7 @@ source_url( include.me );
 
 
 
-path.to.nascent = "C:/Users/Alexander Nevsky/Dropbox/WSU-419/Fall 2020/__student_access__/unit_02_confirmatory_data_analysis/nascent/";
+path.to.nascent = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/nascent/";
 
 folder.nlp = "nlp/";
 path.to.nlp = paste0(path.to.nascent, folder.nlp);
@@ -338,7 +338,7 @@ We can take any matrix that has entities and attributes (e.g., rows = stories of
 
 ```{r}
 
-path.to.nascent = "C:/Users/Alexander Nevsky/Dropbox/WSU-419/Fall 2020/__student_access__/unit_02_confirmatory_data_analysis/nascent/";
+path.to.nascent = "/Users/jaileefoster/Desktop/stat419/_git_/WSU_STATS419_FALL2020/nascent/";
 
 folder.nlp = "nlp/";
 path.to.nlp = paste0(path.to.nascent, folder.nlp);

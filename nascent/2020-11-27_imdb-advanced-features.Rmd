@@ -58,10 +58,8 @@ This dataset will be the source you will use on your final exam to answer the qu
 # library(devtools);
 # install_github("MonteShaffer/imdb/imdb", force = TRUE); # choose #3 to humanVerseWSU
 # detach(package:imdb);
-install_github("MonteShaffer/imdb/imdb", force=TRUE);
 library(imdb);
 packageVersion("imdb");  # ‘0.1.1’
-library(microbenchmark)
 # ?loadDataIMDB
 ```
 
